@@ -86,6 +86,8 @@ class AfasToHelloHiService
                 $mapping->save();
             }
         }
+
+        return response()->json("Synced succesfully!", 200);
     }
 
     public function syncPersons()
