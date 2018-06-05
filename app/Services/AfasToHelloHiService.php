@@ -53,7 +53,7 @@ class AfasToHelloHiService
         AfasPersonRepository $afasPersonRepository,
         HHCustomerRepository $HHCustomerRepository,
         HHPersonRepository $HHPersonRepository,
-        MappingRepository $mappingRepository
+        mappingRepository $mappingRepository
     ) {
         $this->afasOrganisationRepository = $afasOrganisationRepository;
         $this->afasPersonRepository = $afasPersonRepository;
@@ -72,14 +72,19 @@ class AfasToHelloHiService
 
             // dd($organisation);
 
-            $mapping = new Mapping;
-            $mapping->type = MappingType::ORGANISATION;
-            $mapping->local_id = 1;
-            $mapping->remote_id = $customer['Organisatie_persoon'];
-            $mapping->remote_client_number = 1;
-            $mapping->remote_client_number = Carbon::now();
-            $mapping->remote_client_number = Carbon::now();
-            $mapping->save();
+            // try to find local ID, else insert into mapping
+            if (($mapping = $this->mappingRepository->findByRemoteId(MappingType::ORGANISATION, $customer['Organisatie_persoon']))) {
+                $helloHiCustomer = $this->HHCustomerRepository->find($mapping->local_id);
+            }else {
+                $mapping = new Mapping;
+                $mapping->type = MappingType::ORGANISATION;
+                $mapping->local_id = 1;
+                $mapping->remote_id = $customer['Organisatie_persoon'];
+                $mapping->remote_client_number = 1;
+                $mapping->remote_client_number = Carbon::now();
+                $mapping->remote_client_number = Carbon::now();
+                $mapping->save();
+            }
         }
     }
 
@@ -93,7 +98,11 @@ class AfasToHelloHiService
         return [
             'id' => $data['Organisatie_persoon'],
             'name' => $data['Naam'],
-            'address' => $data['Straat'] . " " . $data['Huisnummer'] . " " . $data['Huisnummer_toev'],
+            'address' => implode(' ', [
+                    $data['Straat'],
+                    $data['Huisnummer'],
+                    $data['Huisnummer_toev']
+                ]),
             'type' => $data['Soort_contact'],
             'postal_code' => $data['Postcode'],
             'city' => $data['Woonplaats']

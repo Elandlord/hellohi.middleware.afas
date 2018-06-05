@@ -1,6 +1,7 @@
 <?php namespace App\Repositories\HelloHi;
 
 use HelloHi\ApiClient\Model;
+use HelloHi\ApiClient\Client;
 
 class HHCustomerRepository extends APIRepository implements \App\Repositories\HHCustomerRepository {
     /**
