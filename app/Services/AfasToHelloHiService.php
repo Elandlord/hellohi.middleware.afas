@@ -67,10 +67,13 @@ class AfasToHelloHiService
     public function syncAfasToHelloHi()
     {
         foreach(Tenant::all() as $tenant){
+            // Switch per tenant!
+            // Switch connection
+            // Gives error: User has no access to this tenant.
+            // How to get correct user credentials?
             $client = Client::getInstance();
-            $client->setTenantId($tenant->id);
+            $client->setTenantId($tenant->remote_id);
             
-
             if($tenant->initial_sync == 0){
                 $this->syncOrganisations($tenant);
                 $this->syncPersons($tenant);
@@ -82,8 +85,6 @@ class AfasToHelloHiService
 
     public function syncOrganisations(Tenant $tenant)
     {
-        // Switch per tenant!
-        // Switch connection
         foreach($this->afasOrganisationRepository->all() as $customer){
             // $organisation = new Organisation;
             
@@ -95,11 +96,8 @@ class AfasToHelloHiService
                 $customerData = $this->createHHCustomerFromAfasOrganisation($customer);
                 $helloHiCustomer = $this->HHCustomerRepository->create($customerData);
 
-                // DEBUG: $this->HHCustomerRepository->create($customerData); returns null...?
-
                 $mapping = new Mapping;
                 $mapping->type = MappingType::ORGANISATION;
-                // Local ID needs to be filled with $helloHiCustomer->id when functional!!
                 $mapping->local_id = $helloHiCustomer->id;
                 $mapping->remote_id = $customer['Organisatie_persoon'];
                 $mapping->remote_client_number = 1;
@@ -113,15 +111,14 @@ class AfasToHelloHiService
 
     public function syncPersons(Tenant $tenant)
     {   
-        // Switch per tenant!
-        // switch connection
         foreach($this->afasPersonRepository->all() as $person){
-            // $organisation = new Organisation;
-            // $organisation->setValuesFromArray($this->createHHCustomerFromAfasOrganisation($customer));
-            // try to find local ID, else insert into mapping
             if (($mapping = $this->mappingRepository->findByRemoteId(MappingType::PERSON, $person['Organisatie_persoon'], $tenant->id))) {
                 $helloHiPerson = $this->HHPersonRepository->find($mapping->local_id);
             }else {
+                $person = new Person;
+                $personData = $this->createHHPersonFromAfasPerson($person);
+                $helloHiPerson = $this->HHPersonRepository->create($personData);
+
                 $mapping = new Mapping;
                 $mapping->type = MappingType::PERSON;
                 $mapping->local_id = 1;
