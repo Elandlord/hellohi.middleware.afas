@@ -64,55 +64,83 @@ class AfasToHelloHiService
         $this->mappingRepository = $mappingRepository;
     }
 
-    public function syncOrganisations()
+    public function syncAfasToHelloHi()
     {
-        // Switch per tenant!
         foreach(Tenant::all() as $tenant){
             if($tenant->initial_sync == 0){
-                // switch connection
-                foreach($this->afasOrganisationRepository->all() as $customer){
-                    // $organisation = new Organisation;
-                    // $organisation->setValuesFromArray($this->createHHCustomerFromAfasOrganisation($customer));
-    
-                    // try to find local ID, else insert into mapping
-                    if (($mapping = $this->mappingRepository->findByRemoteId(MappingType::ORGANISATION, $customer['Organisatie_persoon'], $tenant->id))) {
-                        $helloHiCustomer = $this->HHCustomerRepository->find($mapping->local_id);
-                    }else {
-                        $mapping = new Mapping;
-                        $mapping->type = MappingType::ORGANISATION;
-                        $mapping->local_id = 1;
-                        $mapping->remote_id = $customer['Organisatie_persoon'];
-                        $mapping->remote_client_number = 1;
-                        $mapping->remote_client_number = 1;
-                        $mapping->tenant_id = $tenant->id;
-                        $mapping->save();
-                    }
-                }
-    
+                $this->syncOrganisations($tenant);
+                $this->syncPersons($tenant);
                 $tenant->initial_sync = 1;
                 $tenant->save();
+            }
+        }
+    }
+
+    public function syncOrganisations(Tenant $tenant)
+    {
+        // Switch per tenant!
+        // switch connection
+        foreach($this->afasOrganisationRepository->all() as $customer){
+            // $organisation = new Organisation;
+            
+            // try to find local ID, else insert into mapping
+            if (($mapping = $this->mappingRepository->findByRemoteId(MappingType::ORGANISATION, $customer['Organisatie_persoon'], $tenant->id))) {
+                $helloHiCustomer = $this->HHCustomerRepository->find($mapping->local_id);
+            }else {
+                $organisation = new Organisation;
+                $customerData = $this->createHHCustomerFromAfasOrganisation($customer);
+                $helloHiCustomer = $this->HHCustomerRepository->create($customerData);
+
+                // DEBUG: $this->HHCustomerRepository->create($customerData); returns null...?
+
+                $mapping = new Mapping;
+                $mapping->type = MappingType::ORGANISATION;
+                $mapping->local_id = 1;
+                $mapping->remote_id = $customer['Organisatie_persoon'];
+                $mapping->remote_client_number = 1;
+                $mapping->tenant_id = $tenant->id;
+                $mapping->save();
             }
         }
 
         return response()->json("Synced succesfully!", 200);
     }
 
-    public function syncPersons()
-    {
+    public function syncPersons(Tenant $tenant)
+    {   
+        // Switch per tenant!
+        // switch connection
+        foreach($this->afasPersonRepository->all() as $person){
+            // $organisation = new Organisation;
+            // $organisation->setValuesFromArray($this->createHHCustomerFromAfasOrganisation($customer));
+            // try to find local ID, else insert into mapping
+            if (($mapping = $this->mappingRepository->findByRemoteId(MappingType::PERSON, $person['Organisatie_persoon'], $tenant->id))) {
+                $helloHiPerson = $this->HHPersonRepository->find($mapping->local_id);
+            }else {
+                $mapping = new Mapping;
+                $mapping->type = MappingType::PERSON;
+                $mapping->local_id = 1;
+                $mapping->remote_id = $person['Organisatie_persoon'];
+                $mapping->remote_client_number = 1;
+                $mapping->tenant_id = $tenant->id;
+                $mapping->save();
+            }
+        }
 
+        return response()->json("Synced succesfully!", 200);
     }
 
     public function createHHCustomerFromAfasOrganisation($data)
     {
         return [
-            'id' => $data['Organisatie_persoon'],
+            // 'id' => $data['Organisatie_persoon'],
             'name' => $data['Naam'],
+            'type' => $data['Soort_contact'],
             'address' => implode(' ', [
                     $data['Straat'],
                     $data['Huisnummer'],
                     $data['Huisnummer_toev']
                 ]),
-            'type' => $data['Soort_contact'],
             'postal_code' => $data['Postcode'],
             'city' => $data['Woonplaats']
         ];

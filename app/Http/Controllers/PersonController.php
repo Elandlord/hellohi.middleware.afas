@@ -8,7 +8,7 @@ use App\Classes\AfasClient;
 
 use App\Models\Tenant;
 
-class CustomerController extends Controller
+class PersonController extends Controller
 {
     private $afasToHelloHiService;
 
@@ -19,6 +19,6 @@ class CustomerController extends Controller
 
     public function syncAfas(Tenant $tenant)
     {
-        $this->afasToHelloHiService->syncOrganisations($tenant);
+        $this->afasToHelloHiService->syncPersons($tenant);
     }
 }

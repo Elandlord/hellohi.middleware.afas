@@ -22,8 +22,7 @@ class AfasPersonRepository implements \App\Repositories\AfasPersonRepository
         $endpoint = "connectors/Personen";
 
         $response = $this->afasClient->get($endpoint);
-
-        dd($response);
+        return $response['rows'];
     }
 
     /**
@@ -36,8 +35,7 @@ class AfasPersonRepository implements \App\Repositories\AfasPersonRepository
         $endpoint = "connectors/Personen/" . $id;
 
         $response = $this->afasClient->get($endpoint);
-
-        dd($response);
+        return $response;
     }
 
     /**
