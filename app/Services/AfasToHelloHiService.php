@@ -10,6 +10,7 @@ use HelloHi\ApiClient\Client;
 
 use App\Models\Mapping;
 use App\Models\API\Organisation;
+use App\Models\API\Person;
 use App\Enums\MappingType;
 
 use App\Models\Tenant;
@@ -78,6 +79,7 @@ class AfasToHelloHiService
                 $this->syncOrganisations($tenant);
                 $this->syncPersons($tenant);
                 $tenant->initial_sync = 1;
+                $tenant->latest_sync = Carbon::now();
                 $tenant->save();
             }
         }
@@ -92,7 +94,6 @@ class AfasToHelloHiService
             if (($mapping = $this->mappingRepository->findByRemoteId(MappingType::ORGANISATION, $customer['Organisatie_persoon'], $tenant->id))) {
                 $helloHiCustomer = $this->HHCustomerRepository->find($mapping->local_id);
             }else {
-                $organisation = new Organisation;
                 $customerData = $this->createHHCustomerFromAfasOrganisation($customer);
                 $helloHiCustomer = $this->HHCustomerRepository->create($customerData);
 
@@ -115,7 +116,6 @@ class AfasToHelloHiService
             if (($mapping = $this->mappingRepository->findByRemoteId(MappingType::PERSON, $person['Organisatie_persoon'], $tenant->id))) {
                 $helloHiPerson = $this->HHPersonRepository->find($mapping->local_id);
             }else {
-                $person = new Person;
                 $personData = $this->createHHPersonFromAfasPerson($person);
                 $helloHiPerson = $this->HHPersonRepository->create($personData);
 
@@ -130,6 +130,18 @@ class AfasToHelloHiService
         }
 
         return response()->json("Synced succesfully!", 200);
+    }
+
+    public function createHHPersonFromAfasPerson($data)
+    {        
+        // Soort_contact is not corresponding to HelloHi ENUM
+        return [
+            'salutation' => $data['Titel_voor'],
+            'initials' => $data['Voorletters'],
+            'first_name' => $data['Voornaam'],
+            'last_name' => $data['Achternaam'],
+            'gender' => strtolower($data['Geslacht_code']),
+        ];
     }
 
     public function createHHCustomerFromAfasOrganisation($data)

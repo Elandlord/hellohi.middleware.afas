@@ -39,6 +39,8 @@ Route::get('/afas/sync', 'AfasController@initialSyncAfas')->name('sync-afas');
 |
 | Here is where the HelloHi / MKA routes are registered.
 |
+| Waiting for additional information to create HelloHi > Afas sync.
+|
 */
 Route::get('/hellohi/customers', 'HelloHiController@customers')->name('hellohi-customers');
 Route::get('/hellohi/persons', 'HelloHiController@persons')->name('hellohi-persons');

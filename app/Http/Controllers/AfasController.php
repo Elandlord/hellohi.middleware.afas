@@ -49,7 +49,7 @@ class AfasController extends Controller
 
     public function persons()
     {
-        $this->afasPersonRepository->all();
+        dd($this->afasPersonRepository->all());
     }
 
     public function initialSyncAfas()

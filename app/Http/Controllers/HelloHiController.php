@@ -37,7 +37,20 @@ class HelloHiController extends Controller
 
     public function customers()
     {
-        dd($this->HHCustomerRepository->all());
+        $customers = $this->HHCustomerRepository->all();
+        dd($customers);
+
+        // To clean-up all the customers
+        // for($i = 0; $i <= ($customers->total() / 15); $i++){
+        //     $customers = $this->HHCustomerRepository->all();
+
+            
+        //     $customers->each(function($customer) {
+        //         if(!$customer->name != "Customer 1" || !$customer->name != "Customer 2" || !$customer->name != "Customer 3"){
+        //             $this->HHCustomerRepository->delete($customer->id);
+        //         }
+        //     });
+        // }
     }
 
     public function persons()
