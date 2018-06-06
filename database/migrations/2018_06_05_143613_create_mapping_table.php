@@ -19,6 +19,8 @@ class CreateMappingTable extends Migration
             $table->string('local_id');
             $table->string('remote_id');
             $table->string('remote_client_number');
+            $table->integer('tenant_id')->unsigned();
+            $table->foreign('tenant_id')->references('id')->on('tenants');
             $table->timestamps();
         });
     }

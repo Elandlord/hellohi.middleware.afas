@@ -29,9 +29,10 @@ class TenantSeeder extends Seeder
         $response = Model::all('tenants', ['creator']);
 
         foreach($response as $tenant) {
-            // $tenant = Tenant::create(
-            //     ['name' => $tenant->name]
-            // );  
+            $createTenant = Tenant::updateOrCreate(
+                ['remote_id' => $tenant->id],
+                ['name' => $tenant->name, 'initial_sync' => 0]
+            );  
         }
     }
 }

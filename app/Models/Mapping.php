@@ -16,4 +16,9 @@ class Mapping extends Model
     protected $fillable = [
         'type', 'local_id', 'remote_id', 'remote_client_number'
     ];
+
+    public function tenant()
+    {
+        return $this->hasOne('App\Models\Tenant');
+    }
 }

@@ -12,6 +12,8 @@ use App\Models\Mapping;
 use App\Models\API\Organisation;
 use App\Enums\MappingType;
 
+use App\Models\Tenant;
+
 use Carbon\Carbon;
 
 class AfasToHelloHiService
@@ -65,25 +67,30 @@ class AfasToHelloHiService
     public function syncOrganisations()
     {
         // Switch per tenant!
-
-        foreach($this->afasOrganisationRepository->all() as $customer){
-            // $organisation = new Organisation;
-            // $organisation->setValuesFromArray($this->createHHCustomerFromAfasOrganisation($customer));
-
-            // dd($organisation);
-
-            // try to find local ID, else insert into mapping
-            if (($mapping = $this->mappingRepository->findByRemoteId(MappingType::ORGANISATION, $customer['Organisatie_persoon']))) {
-                $helloHiCustomer = $this->HHCustomerRepository->find($mapping->local_id);
-            }else {
-                $mapping = new Mapping;
-                $mapping->type = MappingType::ORGANISATION;
-                $mapping->local_id = 1;
-                $mapping->remote_id = $customer['Organisatie_persoon'];
-                $mapping->remote_client_number = 1;
-                $mapping->remote_client_number = Carbon::now();
-                $mapping->remote_client_number = Carbon::now();
-                $mapping->save();
+        foreach(Tenant::all() as $tenant){
+            if($tenant->initial_sync == 0){
+                // switch connection
+                foreach($this->afasOrganisationRepository->all() as $customer){
+                    // $organisation = new Organisation;
+                    // $organisation->setValuesFromArray($this->createHHCustomerFromAfasOrganisation($customer));
+    
+                    // try to find local ID, else insert into mapping
+                    if (($mapping = $this->mappingRepository->findByRemoteId(MappingType::ORGANISATION, $customer['Organisatie_persoon'], $tenant->id))) {
+                        $helloHiCustomer = $this->HHCustomerRepository->find($mapping->local_id);
+                    }else {
+                        $mapping = new Mapping;
+                        $mapping->type = MappingType::ORGANISATION;
+                        $mapping->local_id = 1;
+                        $mapping->remote_id = $customer['Organisatie_persoon'];
+                        $mapping->remote_client_number = 1;
+                        $mapping->remote_client_number = 1;
+                        $mapping->tenant_id = $tenant->id;
+                        $mapping->save();
+                    }
+                }
+    
+                $tenant->initial_sync = 1;
+                $tenant->save();
             }
         }
 

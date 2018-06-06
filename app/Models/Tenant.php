@@ -1,8 +1,8 @@
-<?php
+<?php namespace App\Models;
 
-namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
 
-class Tenant
+class Tenant extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -14,4 +14,9 @@ class Tenant
         'initial_sync', 
         'latest_sync',
     ];
+
+    public function mapping()
+    {
+        return $this->belongsTo('App\Models\Mapping');
+    }
 }

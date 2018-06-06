@@ -36,9 +36,9 @@ class MappingRepository implements \App\Repositories\MappingRepository
      * @param $remote_id
      * @return Mapping|null
      */
-    public function findByRemoteId($type, $remote_id)
+    public function findByRemoteId($type, $remote_id, $tenant_id)
     {
-        return Mapping::where('type', $type)->where('remote_id', $remote_id)->first();
+        return Mapping::where('type', $type)->where('remote_id', $remote_id)->where('tenant_id', $tenant_id)->first();
     }
 
     /**

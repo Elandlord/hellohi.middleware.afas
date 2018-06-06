@@ -16,6 +16,7 @@ class CreateTenantsTable extends Migration
         Schema::create('tenants', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->nullable();
+            $table->string('remote_id');
             $table->boolean('initial_sync')->nullable();
             $table->dateTime('latest_sync')->nullable();
             $table->timestamps();
