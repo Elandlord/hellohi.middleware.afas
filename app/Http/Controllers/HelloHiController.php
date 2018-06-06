@@ -55,6 +55,27 @@ class HelloHiController extends Controller
 
     public function persons()
     {
-        dd($this->HHPersonRepository->all());
+        $persons = $this->HHPersonRepository->all();
+        dd($persons);
+
+        // To clean-up all the persons
+        // for($i = 0; $i <= ($persons->total() / 15); $i++){
+        //     $persons = $this->HHPersonRepository->all();
+
+        //     $persons->each(function($person) {
+        //         $person_array = [
+        //             "One",
+        //             "Admin",
+        //             "Kantoor",
+        //             "Marijke",
+        //             "One",
+        //             "One",
+        //         ];
+
+        //         if(!in_array($person->first_name, $person_array)){
+        //             $this->HHPersonRepository->delete($person->id);
+        //         }
+        //     });
+        // }
     }
 }

@@ -1,6 +1,7 @@
 <?php namespace App\Repositories\HelloHi;
 
 use HelloHi\ApiClient\Model;
+use HelloHi\ApiClient\Client;
 
 class HHPersonRepository extends APIRepository implements \App\Repositories\HHPersonRepository {
 
@@ -29,7 +30,14 @@ class HHPersonRepository extends APIRepository implements \App\Repositories\HHPe
      */
     public function create($data)
     {
-        return Model::create('persons', $data);
+        $response = Model::create('persons', $data);
+
+        if(($response) != null) {
+            return $response;
+        }
+
+        $client = Client::getInstance();
+        dd($client->lastError);
     }
 
     /**

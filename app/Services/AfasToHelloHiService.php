@@ -121,7 +121,7 @@ class AfasToHelloHiService
 
                 $mapping = new Mapping;
                 $mapping->type = MappingType::PERSON;
-                $mapping->local_id = 1;
+                $mapping->local_id = $helloHiPerson->id;
                 $mapping->remote_id = $person['Organisatie_persoon'];
                 $mapping->remote_client_number = 1;
                 $mapping->tenant_id = $tenant->id;
@@ -135,6 +135,10 @@ class AfasToHelloHiService
     public function createHHPersonFromAfasPerson($data)
     {        
         // Soort_contact is not corresponding to HelloHi ENUM
+        if($data['Geslacht_code'] == 'V'){
+            $data['Geslacht_code'] = 'f';
+        }
+
         return [
             'salutation' => $data['Titel_voor'],
             'initials' => $data['Voorletters'],
