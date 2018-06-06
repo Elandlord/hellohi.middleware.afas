@@ -88,15 +88,16 @@ class AfasToHelloHiService
     public function syncOrganisations(Tenant $tenant)
     {
         foreach($this->afasOrganisationRepository->all() as $customer){
-            // $organisation = new Organisation;
-            
-            // try to find local ID, else insert into mapping
+
+            // try to find local ID, else insert into HelloHi database and Middleware database
             if (($mapping = $this->mappingRepository->findByRemoteId(MappingType::ORGANISATION, $customer['Organisatie_persoon'], $tenant->id))) {
                 $helloHiCustomer = $this->HHCustomerRepository->find($mapping->local_id);
             }else {
+                // Create Customer from AFAS organisation Data
                 $customerData = $this->createHHCustomerFromAfasOrganisation($customer);
                 $helloHiCustomer = $this->HHCustomerRepository->create($customerData);
 
+                // Create new Mapping, AFAS organisation ID to HelloHi Customer ID
                 $mapping = new Mapping;
                 $mapping->type = MappingType::ORGANISATION;
                 $mapping->local_id = $helloHiCustomer->id;
@@ -113,12 +114,16 @@ class AfasToHelloHiService
     public function syncPersons(Tenant $tenant)
     {   
         foreach($this->afasPersonRepository->all() as $person){
+
+            // try to find local ID, else insert into HelloHi database and Middleware database
             if (($mapping = $this->mappingRepository->findByRemoteId(MappingType::PERSON, $person['Organisatie_persoon'], $tenant->id))) {
                 $helloHiPerson = $this->HHPersonRepository->find($mapping->local_id);
             }else {
+                // Create Person from AFAS organisation Data
                 $personData = $this->createHHPersonFromAfasPerson($person);
                 $helloHiPerson = $this->HHPersonRepository->create($personData);
 
+                // Create new Mapping, AFAS Person ID to HelloHi Person ID
                 $mapping = new Mapping;
                 $mapping->type = MappingType::PERSON;
                 $mapping->local_id = $helloHiPerson->id;
