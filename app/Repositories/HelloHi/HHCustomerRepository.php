@@ -27,7 +27,14 @@ class HHCustomerRepository extends APIRepository implements \App\Repositories\HH
      */
     public function create($data)
     {
-        return Model::create('customers', $data);
+        $response = Model::create('customers', $data);
+
+        if(($response) != null) {
+            return $response;
+        }
+
+        $client = Client::getInstance();
+        dd($client->lastError);
     }
     /**
      * @param $id

@@ -67,6 +67,10 @@ class AfasToHelloHiService
     public function syncAfasToHelloHi()
     {
         foreach(Tenant::all() as $tenant){
+            $client = Client::getInstance();
+            $client->setTenantId($tenant->id);
+            
+
             if($tenant->initial_sync == 0){
                 $this->syncOrganisations($tenant);
                 $this->syncPersons($tenant);
@@ -79,7 +83,7 @@ class AfasToHelloHiService
     public function syncOrganisations(Tenant $tenant)
     {
         // Switch per tenant!
-        // switch connection
+        // Switch connection
         foreach($this->afasOrganisationRepository->all() as $customer){
             // $organisation = new Organisation;
             
@@ -95,7 +99,8 @@ class AfasToHelloHiService
 
                 $mapping = new Mapping;
                 $mapping->type = MappingType::ORGANISATION;
-                $mapping->local_id = 1;
+                // Local ID needs to be filled with $helloHiCustomer->id when functional!!
+                $mapping->local_id = $helloHiCustomer->id;
                 $mapping->remote_id = $customer['Organisatie_persoon'];
                 $mapping->remote_client_number = 1;
                 $mapping->tenant_id = $tenant->id;
@@ -132,6 +137,15 @@ class AfasToHelloHiService
 
     public function createHHCustomerFromAfasOrganisation($data)
     {
+        // Soort_contact is not corresponding to HelloHi ENUM
+        if($data['Soort_contact'] == 'Organisatie'){
+            $data['Soort_contact'] = 'business';
+        }
+
+        if($data['Soort_contact']  == 'Persoon'){
+            $data['Soort_contact'] = 'person';
+        }
+
         return [
             // 'id' => $data['Organisatie_persoon'],
             'name' => $data['Naam'],

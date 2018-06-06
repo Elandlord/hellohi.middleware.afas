@@ -24,7 +24,7 @@ interface MappingRepository
      * @param $local_id
      * @return Mapping|null
      */
-    public function findByLocalId($type, $local_id);
+    public function findByLocalId($type, $local_id, $tenant_id);
 
     /**
      * @param $type

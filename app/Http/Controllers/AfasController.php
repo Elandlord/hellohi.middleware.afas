@@ -44,7 +44,7 @@ class AfasController extends Controller
 
     public function organisations()
     {
-        $this->afasOrganisationRepository->all();
+        dd($this->afasOrganisationRepository->all());
     }
 
     public function persons()

@@ -26,9 +26,9 @@ class MappingRepository implements \App\Repositories\MappingRepository
      * @param $local_id
      * @return Mapping|null
      */
-    public function findByLocalId($type, $local_id)
+    public function findByLocalId($type, $local_id, $tenant_id)
     {
-        return Mapping::where('type', $type)->where('local_id', $local_id)->first();
+        return Mapping::where('type', $type)->where('local_id', $local_id)->where('tenant_id', $tenant_id)->first();
     }
 
     /**
