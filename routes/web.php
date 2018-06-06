@@ -26,6 +26,7 @@
 |
 */
 Route::get('/afas/organisations', 'AfasController@organisations')->name('afas-organisations');
+Route::get('/afas/organisations/{id}', 'AfasController@findOrganisation')->name('afas-organisations');
 Route::get('/afas/persons', 'AfasController@persons')->name('afas-persons');
 
 Route::get('/afas/customers/sync/{tenant}', 'CustomerController@syncAfas')->name('sync-organisations');

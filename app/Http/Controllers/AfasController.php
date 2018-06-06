@@ -42,6 +42,11 @@ class AfasController extends Controller
         $this->afasToHelloHiService = $afasToHelloHiService;   
     }
 
+    public function findOrganisation($id)
+    {
+        $this->afasOrganisationRepository->find($id);
+    }
+
     public function organisations()
     {
         dd($this->afasOrganisationRepository->all());

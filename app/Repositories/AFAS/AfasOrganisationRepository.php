@@ -33,11 +33,11 @@ class AfasOrganisationRepository implements \App\Repositories\AfasOrganisationRe
      */
     function find($id)
     {
-        $endpoint = "connectors/Organisaties/" . $id;
+        $endpoint = "connectors/Organisaties";
 
         $response = $this->afasClient->get($endpoint);
-
-        return $response;
+        
+        return collect($response['rows'])->firstWhere('Organisatie_persoon', $id);
     }
 
     /**
