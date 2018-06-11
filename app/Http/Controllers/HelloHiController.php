@@ -53,6 +53,12 @@ class HelloHiController extends Controller
         // }
     }
 
+    public function findCustomer($id)
+    {
+        $customer = $this->HHCustomerRepository->find($id);
+        return $customer;
+    }
+
     public function persons()
     {
         $persons = $this->HHPersonRepository->all();
@@ -77,5 +83,11 @@ class HelloHiController extends Controller
         //         }
         //     });
         // }
+    }
+
+    public function findPerson($id)
+    {
+        $person = $this->HHPersonRepository->find($id);
+        return $person;
     }
 }

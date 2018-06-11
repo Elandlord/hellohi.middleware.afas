@@ -46,4 +46,6 @@ Route::get('/afas/sync', 'AfasController@initialSyncAfas')->name('sync-afas');
 |
 */
 Route::get('/hellohi/customers', 'HelloHiController@customers')->name('hellohi-customers');
+Route::get('/hellohi/customers/{id}', 'HelloHiController@findCustomer')->name('hellohi-customer-find');
 Route::get('/hellohi/persons', 'HelloHiController@persons')->name('hellohi-persons');
+Route::get('/hellohi/persons/{id}', 'HelloHiController@findPerson')->name('hellohi-person-find');
