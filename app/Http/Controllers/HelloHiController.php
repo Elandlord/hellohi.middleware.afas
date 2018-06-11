@@ -35,6 +35,11 @@ class HelloHiController extends Controller
         $this->HHPersonRepository = $HHPersonRepository;
     }
 
+    /**
+     * Get all customers from HelloHi API.
+     *
+     * @return void
+     */
     public function customers()
     {
         $customers = $this->HHCustomerRepository->all();
@@ -53,12 +58,23 @@ class HelloHiController extends Controller
         // }
     }
 
+    /**
+     * Find HelloHi customer by ID.
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function findCustomer($id)
     {
         $customer = $this->HHCustomerRepository->find($id);
         return $customer;
     }
 
+    /**
+     * Get all persons from HelloHi API.
+     *
+     * @return void
+     */
     public function persons()
     {
         $persons = $this->HHPersonRepository->all();
@@ -85,6 +101,12 @@ class HelloHiController extends Controller
         // }
     }
 
+    /**
+     * Find HelloHi person by ID
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function findPerson($id)
     {
         $person = $this->HHPersonRepository->find($id);
