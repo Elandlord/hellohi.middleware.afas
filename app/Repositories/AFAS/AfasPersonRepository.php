@@ -22,6 +22,7 @@ class AfasPersonRepository implements \App\Repositories\AfasPersonRepository
         $endpoint = "connectors/Personen";
 
         $response = $this->afasClient->get($endpoint);
+        
         return $response['rows'];
     }
 
@@ -32,10 +33,11 @@ class AfasPersonRepository implements \App\Repositories\AfasPersonRepository
      */
     function find($id)
     {
-        $endpoint = "connectors/Personen/" . $id;
-
+        $endpoint = "connectors/Personen";
+        
         $response = $this->afasClient->get($endpoint);
-        return $response;
+
+        return collect($response['rows'])->firstWhere('Organisatie_persoon', $id);
     }
 
     /**

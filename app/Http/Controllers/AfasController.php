@@ -57,6 +57,11 @@ class AfasController extends Controller
         dd($this->afasPersonRepository->all());
     }
 
+    public function findPerson($id)
+    {
+        $this->afasPersonRepository->find($id);
+    }
+
     public function initialSyncAfas()
     {
         $this->afasToHelloHiService->syncAfasToHelloHi();
